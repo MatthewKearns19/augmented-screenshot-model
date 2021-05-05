@@ -29,7 +29,7 @@ def prepare_iterator(directory, image_prefix, saved_format):
     return iterator
 
 
-sample_image = "dublin.png"
+sample_image = "sample_dublin.png"
 image = load_img(sample_image)
 
 samples = convert_to_3d_numpy_array(image)
@@ -40,7 +40,7 @@ data_generator = ImageDataGenerator(zoom_range=[0.5, 1.0], rotation_range=40,
                                     shear_range=0.2, horizontal_flip=True,
                                     rescale=1/255.)
 
-prepared_iterator = prepare_iterator("augmented_images", "dublin", "png")
+prepared_iterator = prepare_iterator("augmented_images", "sample_dublin", "png")
 
 # generate augmented images and save to augmented_images folder
 for i in range(2):
