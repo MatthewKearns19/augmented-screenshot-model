@@ -55,62 +55,59 @@ def distort_and_save_images(image_from_dataset, name):
     time.sleep(1)
     # speckle noise
     s_1, s_2, s_3 = add_noise(image_from_dataset, "speckle")
+    time.sleep(1)
 
-    # apply_noise returns a floating-point image in the range [0, 1]
-    # so need to change it to 'uint8' with range [0,255]
-    gb1 = convert_to_unit8(gb_1)
-    gb2 = convert_to_unit8(gb_2)
-    gb3 = convert_to_unit8(gb_3)
-    save_to_new_directory(gb1, gb2, gb3, name)
-
-    gn1 = convert_to_unit8(gn_1)
-    gn2 = convert_to_unit8(gn_2)
-    gn3 = convert_to_unit8(gn_3)
-    save_to_new_directory(gn1, gn2, gn3, name)
-
-    sp1 = convert_to_unit8(sp_1)
-    sp2 = convert_to_unit8(sp_2)
-    sp3 = convert_to_unit8(sp_3)
-    save_to_new_directory(sp1, sp2, sp3, name)
-
-    s1 = convert_to_unit8(s_1)
-    s2 = convert_to_unit8(s_1)
-    s3 = convert_to_unit8(s_1)
-    save_to_new_directory(s1, s2, s3, name)
-
-
-def convert_to_unit8(floating_point_image):
-    # img = cv2.convertScaleAbs(image, alpha=255.0)
-    converted = np.array(255 * floating_point_image, dtype=np.uint8)
-    return converted
-
-
-def save_to_new_directory(image_1, image_2, image_3, name):
-    # gaussian blur file extension and pathing
+    # apply_noise returns a floating-point image in the range
+    # [0, 1] so we need to change it to 'uint8' with range [0,255]
+    gb1, gb2, gb3 = convert_to_unit8(gb_1, gb_2, gb_3)
+    # gaussian blur prefix and pathing
     gb_prefix = "_gb"
     gb_path_to_save = distorted_dataset_dir + name + gb_prefix
-    # gaussian noise file extension and pathing
+    save_to_new_directory(gb1, gb2, gb3, gb_path_to_save)
+
+    gn1, gn2, gn3 = convert_to_unit8(gn_1, gn_2, gn_3)
+    # gaussian noise prefix and pathing
     gn_prefix = "_gn"
     gn_path_to_save = distorted_dataset_dir + name + gn_prefix
-    # salt and pepper file extension and pathing
+    save_to_new_directory(gn1, gn2, gn3, gn_path_to_save)
+
+    sp1, sp2, sp3 = convert_to_unit8(sp_1, sp_2, sp_3)
+    # salt and pepper prefix and pathing
     sp_prefix = "_sp"
     sp_path_to_save = distorted_dataset_dir + name + sp_prefix
-    # poisson file extension and pathing
-    p_prefix = "_p"
-    p_path_to_save = distorted_dataset_dir + name + p_prefix
+    save_to_new_directory(sp1, sp2, sp3, sp_path_to_save)
 
-    prefix_1 = "_1.png"
-    prefix_2 = "_2.png"
-    prefix_3 = "_3.png"
+    s1, s2, s3 = convert_to_unit8(s_1, s_2, s_3)
+    # speckle prefix and pathing
+    s_prefix = "_s"
+    s_path_to_save = distorted_dataset_dir + name + s_prefix
+    save_to_new_directory(s1, s2, s3, s_path_to_save)
+
+
+# convert floating-point images
+def convert_to_unit8(floating_1, floating_2, floating_3):
+    # img = cv2.convertScaleAbs(image, alpha=255.0)
+    converted_1 = np.array(255 * floating_1, dtype=np.uint8)
+    converted_2 = np.array(255 * floating_2, dtype=np.uint8)
+    converted_3 = np.array(255 * floating_3, dtype=np.uint8)
+    return converted_1, converted_2, converted_3
+
+
+def save_to_new_directory(image_1, image_2, image_3, path_to_save):
+    # designed to take three image distortions that were applied to a
+    # single image, with the appropriate path and file name, then allocate
+    # a final prefix to the appropriate image with a file extension
+    prefix_1 = path_to_save + "_1.png"
+    prefix_2 = path_to_save + "_2.png"
+    prefix_3 = path_to_save + "_3.png"
 
     # saving the file with the original name, the new distortion
     # prefix to the new location, e.g "./distorted_dataset/image_1_gb_1.png
     # -> i.e the first variance of image one with gaussian blur applied
-    cv2.imshow(gb_path_to_save + prefix_1, image_1)
-    cv2.imshow(gb_path_to_save + prefix_2, image_2)
-    cv2.imshow(gb_path_to_save + prefix_3, image_3)
-
-    cv2.waitKey(0)
+    cv2.imwrite(prefix_1, image_1)
+    cv2.imwrite(prefix_2, image_2)
+    cv2.imwrite(prefix_3, image_3)
+    #cv2.waitKey(0)
 
 
 for image_in_dataset in os.listdir(dataset_dir):
