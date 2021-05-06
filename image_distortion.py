@@ -46,16 +46,16 @@ def distort_and_save_images(image_from_dataset, name):
 
     # gaussian blur
     gb_1, gb_2, gb_3 = gaussian_blur_noise(image_from_dataset)
-    time.sleep(1)
+    time.sleep(0.1)
     # gaussian noise
     gn_1, gn_2, gn_3 = add_noise(image_from_dataset, "gaussian")
-    time.sleep(1)
+    time.sleep(0.1)
     # salt and pepper noise
     sp_1, sp_2, sp_3 = add_noise(image_from_dataset, "s&p")
-    time.sleep(1)
+    time.sleep(0.1)
     # speckle noise
     s_1, s_2, s_3 = add_noise(image_from_dataset, "speckle")
-    time.sleep(1)
+    time.sleep(0.1)
 
     # apply_noise returns a floating-point image in the range
     # [0, 1] so we need to change it to 'uint8' with range [0,255]
@@ -105,7 +105,9 @@ def save_to_new_directory(image_1, image_2, image_3, path_to_save):
     # prefix to the new location, e.g "./distorted_dataset/image_1_gb_1.png
     # -> i.e the first variance of image one with gaussian blur applied
     cv2.imwrite(prefix_1, image_1)
+    time.sleep(0.5)
     cv2.imwrite(prefix_2, image_2)
+    time.sleep(0.5)
     cv2.imwrite(prefix_3, image_3)
     #cv2.waitKey(0)
 
@@ -118,4 +120,3 @@ for image_in_dataset in os.listdir(dataset_dir):
 
     image_name = os.path.splitext(image_in_dataset)[0]
     distort_and_save_images(converted_to_np, image_name)
-    time.sleep(1)
