@@ -5,11 +5,28 @@ from PIL import Image
 from skimage import util
 from skimage import filters
 import cv2
+import argparse
+import logging
 
+
+parser = argparse.ArgumentParser(description='Starting Image distortion generator')
+parser.add_argument('-data_root_directory', default='./distorted_dataset/', type=str)
+parser.add_argument('-only_local_distortion', default=False, type=lambda x: (str(x).lower() == 'true'))
+
+args, _ = parser.parse_known_args()
+
+if not os.path.isdir(args.data_root_directory):
+    logging.error(f'folder {args.data_root_directory} does not exist! '
+                  f'please provide existing folder in -data_root_directory arg!')
+    exit()
+
+print(f"Directory to store files: {args.data_root_directory}")
+print(f"Local distortion is set to: {args.only_local_distortion}")
 
 dataset_dir = "./dataset/"
 # may need to save in separate directories specific to the distortion applied
-distorted_dataset_dir = "./distorted_dataset/"
+#distorted_dataset_dir = "./distorted_dataset/"
+distorted_dataset_dir = args.data_root_directory
 
 
 # add various noise to an image with a specified variance
@@ -105,14 +122,15 @@ def save_to_new_directory(image_1, image_2, image_3, path_to_save):
     # prefix to the new location, e.g "./distorted_dataset/image_1_gb_1.png
     # -> i.e the first variance of image one with gaussian blur applied
     cv2.imwrite(prefix_1, image_1)
-    time.sleep(0.5)
+    time.sleep(0.1)
     cv2.imwrite(prefix_2, image_2)
-    time.sleep(0.5)
+    time.sleep(0.1)
     cv2.imwrite(prefix_3, image_3)
     #cv2.waitKey(0)
 
 
 for image_in_dataset in os.listdir(dataset_dir):
+
     image_path = dataset_dir + image_in_dataset
     imported_image = Image.open(image_path)
     # convert to numpy array
